@@ -1,6 +1,6 @@
 # Thông tin về các dữ liệu
 
-## Kết quả dự đoán sạt lỡ
+## Kết quả dự đoán sạt lỡ (landslide_probability)
 - Đơn vị: %
 - Giá trị điển hình: 0% đến 100%
 

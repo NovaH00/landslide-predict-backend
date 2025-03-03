@@ -86,7 +86,7 @@ curl -X GET "http://127.0.0.1:5000/weather?lat=40.7128&lon=-74.0060"
     "avgtemp_c": -5.3,
     "condition": "Partly Cloudy ",
     "humidity": 60,
-    "landslide_probability": 0.0330538117696767,
+    "landslide_probability": 0.330538117696767,
     "rain_intensity": 0.0,
     "time": "2025-03-03 00:00",
     "wind_speed": 22.0
@@ -95,7 +95,7 @@ curl -X GET "http://127.0.0.1:5000/weather?lat=40.7128&lon=-74.0060"
     "avgtemp_c": -5.8,
     "condition": "Partly Cloudy ",
     "humidity": 71,
-    "landslide_probability": 0.07394843378799215,
+    "landslide_probability": 0.7394843378799215,
     "rain_intensity": 0.0,
     "time": "2025-03-03 03:00",
     "wind_speed": 19.4
@@ -118,7 +118,7 @@ curl -X GET "http://127.0.0.1:5000/sensor?piezo=50000&exten=25&incli=45&accel=8&
 #### Kết quả trả về:
 ```json
 {
-  "landslide_probability": 0.49713518993612327
+  "landslide_probability": 49.713518993612327
 }
 ```
 
