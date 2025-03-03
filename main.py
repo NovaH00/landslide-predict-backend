@@ -15,6 +15,8 @@ BASE_URL = 'http://api.weatherapi.com/v1/forecast.json'
 # Load the trained models
 weather_model = joblib.load(r'ML Models\weather_model.pkl')
 sensor_model = joblib.load(r'ML Models\sensor_model.pkl')
+weather_flood_model = joblib.load(r'ML Models\weather_flood_model.pkl')
+sensor_flood_model = joblib.load(r'ML Models\sensor_flood_model.pkl')
 
 @app.route('/weather', methods=['GET'])
 def get_weather():
@@ -49,8 +51,13 @@ def get_weather():
                     'avgtemp_c': hour['temp_c']
                 }
                 df = pd.DataFrame([weather_data])
-                probability = weather_model.predict(df)[0]
-                probability = max(0, probability)  # Clamp probability to 0 if less than 0
+                landslide_prob = weather_model.predict(df)[0]
+                flood_prob = weather_flood_model.predict(df)[0]
+                
+                # Clamp probabilities to 0 if less than 0
+                landslide_prob = max(0, landslide_prob)
+                flood_prob = max(0, flood_prob)
+                
                 probabilities.append({
                     'time': hour['time'],
                     'avgtemp_c': hour['temp_c'],
@@ -58,7 +65,8 @@ def get_weather():
                     'rain_intensity': hour.get('precip_mm', 0),
                     'humidity': hour['humidity'],
                     'wind_speed': hour['wind_kph'],
-                    'landslide_probability': probability*100
+                    'landslide_probability': landslide_prob*100,
+                    'flash_flood_probability': flood_prob*100
                 })
 
     return jsonify(probabilities)
@@ -66,15 +74,25 @@ def get_weather():
 @app.route('/sensor', methods=['GET'])
 def get_sensor_data():
     piezometer = request.args.get('piezo')
+    water_level = request.args.get('water_level')
+    flow_rate = request.args.get('flow_rate')
     extensometer = request.args.get('exten')
     inclinometer = request.args.get('incli')
     accelerometer = request.args.get('accel')
     rain_gauge = request.args.get('rain_gauge')
     
-    if not all([piezometer, extensometer, inclinometer, accelerometer, rain_gauge]):
-        return jsonify({'error': 'Please provide all sensor data: piezometer, extensometer, inclinometer, accelerometer, rain_gauge'}), 400
+    # Check landslide sensor data
+    landslide_sensors = [piezometer, extensometer, inclinometer, accelerometer, rain_gauge]
+    if not all(landslide_sensors):
+        return jsonify({'error': 'Please provide all landslide sensor data: piezometer, extensometer, inclinometer, accelerometer, rain_gauge'}), 400
 
-    sensor_data = {
+    # Check flood sensor data
+    flood_sensors = [water_level, flow_rate, rain_gauge]
+    if not all(flood_sensors):
+        return jsonify({'error': 'Please provide all flood sensor data: water_level, flow_rate, rain_gauge'}), 400
+
+    # Prepare landslide sensor data
+    landslide_data = {
         'piezometer': [float(piezometer)],
         'extensometer': [float(extensometer)],
         'inclinometer': [float(inclinometer)],
@@ -82,11 +100,33 @@ def get_sensor_data():
         'rain_gauge': [float(rain_gauge)]
     }
 
-    df = pd.DataFrame(sensor_data)
-    probability = sensor_model.predict(df)[0]
-    probability = max(0, probability)  # Clamp probability to 0 if less than 0
+    # Prepare flood sensor data with all required features
+    flood_data = {
+        'piezometer': [float(piezometer)],
+        'water_level': [float(water_level)],
+        'flow_rate': [float(flow_rate)],
+        'extensometer': [float(extensometer)],
+        'inclinometer': [float(inclinometer)],
+        'accelerometer': [float(accelerometer)],
+        'rain_gauge': [float(rain_gauge)]
+    }
 
-    return jsonify({'landslide_probability': probability*100})
+    # Make predictions
+    landslide_df = pd.DataFrame(landslide_data)
+    flood_df = pd.DataFrame(flood_data)
+    
+    landslide_prob = sensor_model.predict(landslide_df)[0]
+    flood_prob = sensor_flood_model.predict(flood_df)[0]
+    
+    # Clamp probabilities to 0 if less than 0
+    landslide_prob = max(0, landslide_prob)
+    flood_prob = max(0, flood_prob)
+
+    return jsonify({
+        'landslide_probability': landslide_prob*100,
+        'flash_flood_probability': flood_prob*100
+    })
 
 if __name__ == '__main__':
     app.run(debug=True)
+    

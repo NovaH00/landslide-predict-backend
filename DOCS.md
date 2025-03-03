@@ -9,20 +9,29 @@
 1. **Piezometer (Cảm biến áp suất nước lỗ rỗng)**
    - Đơn vị: Kilo Pascal (kPa)
 
+2. **Mực nước**
+   - Đơn vị: Mét (m)
+   - Phạm vi thông thường: 0-15m
+   - Mô tả: Chiều cao mực nước tại điểm quan trắc
 
-2. **Extensometer (Cảm biến dịch chuyển đất)**
+3. **Lưu lượng**
+   - Đơn vị: Mét khối trên giây (m³/s)
+   - Phạm vi thông thường: 0-1000 m³/s
+   - Mô tả: Thể tích nước chảy qua trong một giây
+
+4. **Extensometer (Cảm biến dịch chuyển đất)**
    - Đơn vị: Milimet (mm)
    - Giá trị điển hình: Dao động từ 0.1 mm đến vài chục mm tùy mức độ dịch chuyển đất.
 
-3. **Inclinometer (Cảm biến nghiêng đất)**
+5. **Inclinometer (Cảm biến nghiêng đất)**
    - Đơn vị: Độ (°)
    - Giá trị điển hình: Góc nghiêng từ 0° đến ±90° tùy mức độ biến dạng.
 
-4. **Accelerometer (Cảm biến rung động đất)**
+6. **Accelerometer (Cảm biến rung động đất)**
    - Đơn vị: g (gia tốc trọng trường, với 1g ≈ 9.81 m/s²)
    - Giá trị điển hình: ±2g đến ±16g tùy loại cảm biến.
 
-5. **Rain Gauge (Cảm biến đo lượng mưa)**
+7. **Rain Gauge (Cảm biến đo lượng mưa)**
    - Đơn vị: Milimet (mm) lượng mưa
    - Giá trị điển hình: 1 mm = 1 lít nước/m²
 

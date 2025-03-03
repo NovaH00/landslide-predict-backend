@@ -1,10 +1,10 @@
-# Hướng dẫn sử dụng API Dự báo Thời tiết và Xác suất Sạt lở
+# Landslide and Flash Flood Prediction API
 
 ## Giới thiệu
 
 API này cung cấp hai endpoint chính:
 1. `/weather`: Dự báo thời tiết và xác suất sạt lở dựa trên dữ liệu thời tiết.
-2. `/sensor`: Xác suất sạt lở dựa trên dữ liệu cảm biến.
+2. `/sensor`: Dự báo xác suất sạt lở và lũ quét dựa trên dữ liệu cảm biến.
 
 ## Cách lấy API Key và thiết lập
 
@@ -29,97 +29,78 @@ API này cung cấp hai endpoint chính:
     python main.py
     ```
 
-
 ## Cách sử dụng
 
 ### Endpoint `/weather`
 
-Endpoint này nhận vào tọa độ vĩ độ và kinh độ và trả về dự báo thời tiết và xác suất sạt lở trong 7 ngày tới.
+Endpoint này nhận vào tọa độ vĩ độ và kinh độ và trả về dự báo thời tiết, xác suất sạt lở và lũ quét trong 7 ngày tới.
 
-#### Sử dụng trực tiếp trên trình duyệt
+#### Tham số:
+- `lat`: Vĩ độ của địa điểm
+- `lon`: Kinh độ của địa điểm
 
-Truy cập đường dẫn sau: 
+#### Ví dụ:
 ```sh
-http://127.0.0.1:5000/weather?lat=<vĩ_độ>&lon=<kinh_độ>
-```
-Thay `<vĩ_độ>` và `<kinh_độ>` bằng tọa độ bạn muốn.
-
-#### Sử dụng với `curl`
-
-```sh
-curl -X GET "http://127.0.0.1:5000/weather?lat=<vĩ_độ>&lon=<kinh_độ>"
-```
-### Endpoint `/sensor`
-Endpoint này nhận vào dữ liệu cảm biến và trả về xác suất sạt lở.
-
-#### Sử dụng trực tiếp trên trình duyệt
-
-Truy cập đường dẫn sau:  
-```sh
-http://127.0.0.1:5000/sensor?piezo=<giá_trị>&exten=<giá_trị>&incli=<giá_trị>&accel=<giá_trị>&rain_gauge=<giá_trị>
-```
-Thay các `<giá_trị>` bằng giá trị cảm biến tương ứng.  
-
-#### Sử dụng với `curl`
-
-```sh
-curl -X GET "http://127.0.0.1:5000/sensor?piezo=<giá_trị>&exten=<giá_trị>&incli=<giá_trị>&accel=<giá_trị>&rain_gauge=<giá_trị>"
-```
-
-
-## Ví dụ
-
-### Ví dụ sử dụng `/weather`
-#### Truy cập: 
-```sh
-    http://127.0.0.1:5000/weather?lat=40.7128&lon=-74.0060
-```
-#### Hoặc sử dụng `curl`
-```sh
-curl -X GET "http://127.0.0.1:5000/weather?lat=40.7128&lon=-74.0060"
+http://127.0.0.1:5000/weather?lat=40.7128&lon=-74.0060
 ```
 
 #### Kết quả trả về:
 ```json
 [
   {
-    "avgtemp_c": -5.3,
-    "condition": "Partly Cloudy ",
-    "humidity": 60,
-    "landslide_probability": 0.330538117696767,
-    "rain_intensity": 0.0,
-    "time": "2025-03-03 00:00",
-    "wind_speed": 22.0
-  },
-  {
-    "avgtemp_c": -5.8,
-    "condition": "Partly Cloudy ",
-    "humidity": 71,
-    "landslide_probability": 0.7394843378799215,
-    "rain_intensity": 0.0,
-    "time": "2025-03-03 03:00",
-    "wind_speed": 19.4
-  },
-  ...
-
+    "time": "2024-03-20 00:00",
+    "avgtemp_c": 25,
+    "condition": "Clear",
+    "rain_intensity": 0,
+    "humidity": 80,
+    "wind_speed": 15,
+    "landslide_probability": 35.5,
+    "flash_flood_probability": 25.2
+  }
+]
 ```
 
-### Ví dụ sử dụng `/sensor`
-#### Truy cập:
-```sh
-http://127.0.0.1:5000/sensor?piezo=50000&exten=25&incli=45&accel=8&rain_gauge=250
-```
+### Endpoint `/sensor`
 
-#### Hoặc sử dụng `curl`
+Endpoint này nhận vào dữ liệu từ các cảm biến và trả về xác suất sạt lở và lũ quét.
+
+#### Tham số cho dự báo sạt lở:
+- `piezo`: Áp suất nước lỗ rỗng (0-1000 kPa)
+- `exten`: Độ dịch chuyển đất (0.1-50 mm)
+- `incli`: Góc nghiêng đất (-90° đến 90°)
+- `accel`: Gia tốc rung động (-16g đến 16g)
+- `rain_gauge`: Lượng mưa (0-100 mm)
+
+#### Tham số cho dự báo lũ quét:
+- `water_level`: Mực nước (0-15m)
+- `flow_rate`: Lưu lượng nước (0-1000 m³/s)
+- `rain_gauge`: Lượng mưa (0-100 mm)
+
+#### Ví dụ:
 ```sh
-curl -X GET "http://127.0.0.1:5000/sensor?piezo=50000&exten=25&incli=45&accel=8&rain_gauge=250"
+http://127.0.0.1:5000/sensor?piezo=500&water_level=5&flow_rate=100&exten=25&incli=45&accel=8&rain_gauge=50
 ```
 
 #### Kết quả trả về:
 ```json
 {
-  "landslide_probability": 49.713518993612327
+  "landslide_probability": 45.2,
+  "flash_flood_probability": 62.8
 }
 ```
 
-### Về các đơn vị và thông số của dữ liệu, hãy xem phần [DOCS](DOCS.md)
+## Mức độ rủi ro
+
+### Sạt lở:
+- 0-30%: Nguy cơ thấp
+- 30-60%: Nguy cơ trung bình
+- 60-80%: Nguy cơ cao
+- 80-100%: Nguy cơ cực kỳ cao
+
+### Lũ quét:
+- 0-30%: Nguy cơ thấp
+- 30-60%: Nguy cơ trung bình
+- 60-80%: Nguy cơ cao
+- 80-100%: Nguy cơ cực kỳ cao
+
+### Về các đơn vị và thông số chi tiết của dữ liệu, hãy xem phần [DOCS](DOCS.md)
