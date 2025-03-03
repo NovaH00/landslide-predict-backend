@@ -15,7 +15,7 @@
    - Giá trị điển hình: Dao động từ 0.1 mm đến vài chục mm tùy mức độ dịch chuyển đất.
 
 3. **Inclinometer (Cảm biến nghiêng đất)**
-   - Đơn vị: Độ (°) hoặc radian (rad)
+   - Đơn vị: Độ (°)
    - Giá trị điển hình: Góc nghiêng từ 0° đến ±90° tùy mức độ biến dạng.
 
 4. **Accelerometer (Cảm biến rung động đất)**
